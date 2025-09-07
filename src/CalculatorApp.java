@@ -1,10 +1,15 @@
 import java.util.Scanner;
 import java.lang.Exception;
+import java.util.ArrayList;
 
 class Calculator{
+    private ArrayList<String> history = new ArrayList<String>();
+
+
     //advanced operations
     public void squareRoot(String s){
         System.out.println("Square root of "+s+" = "+Math.sqrt(Double.parseDouble(s))+"\n");
+        addToHistory("Square root of "+s+" = "+Math.sqrt(Double.parseDouble(s)));
     }
     public void factorial(String s){
         int n = Integer.parseInt(s);
@@ -17,18 +22,19 @@ class Calculator{
             fact *= i;
         }
         System.out.println("Factorial of "+s+" = "+fact+"\n");
+        addToHistory("Factorial of "+s+" = "+fact);
     }
     public void power(String s1, String s2) {
-            double base = Double.parseDouble(s1.trim());
-            double exponent = Double.parseDouble(s2.trim());
-            if(exponent < 0) {
-                System.out.println("Exponent should be a non-negative number.\n");
-                return;
-            }
-            double result = Math.pow(base, exponent);
-            System.out.printf("%.4f raised to the power %.4f = %.4f%n", base, exponent, result); 
+        double base = Double.parseDouble(s1.trim());
+        double exponent = Double.parseDouble(s2.trim());
+        if(exponent < 0) {
+            System.out.println("Exponent should be a non-negative number.\n");
+            return;
+        }
+        double result = Math.pow(base, exponent);
+        System.out.printf("%.4f raised to the power %.4f = %.4f%n", base, exponent, result); 
+        addToHistory(base + " raised to the power " + exponent + " = " + result);
 }
-
 
 
     //basic operations
@@ -40,16 +46,23 @@ class Calculator{
             case '*': res = n1 * n2;break;
             case '%':
                 if(n2==0)throw new ArithmeticException("Division by Zero");
-                res = n1%n2;
+                res = (int)n1%(int)n2;
                 break;
             case '/':
                 if(n2==0)throw new ArithmeticException("Division by Zero");
-                res = n1/n2;
+                res = (int)n1/(int)n2;
                 break;
             default:
                 throw new Exception("Invalid Operator!");
         }
+        addToHistory(n1 + " " + o + " " + n2 + " = " + res);
         return res;
+    }
+
+
+    //history functions
+    private void addToHistory(String record){
+        history.add(record);
     }
 
 }
@@ -63,7 +76,7 @@ public class CalculatorApp {
         Calculator c = new Calculator();
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("\nWelcome to a Simple Calculator which has following functions\n");
+        System.out.println(bold+italic+"\nWelcome to a Simple Calculator which has following functions\n"+reset);
         System.out.println("1.Basic calculations + - / % * ");
         System.out.println("2.Square root");
         System.out.println("3.Factorial");
@@ -105,11 +118,15 @@ public class CalculatorApp {
                     continue;
                 }
 
+                //history operations like save, history
+                
+                
+
                 //basic operations like + - * / %
                 else{
                     if(parts.length!=3){
                         System.out.println("Invalid format!  ");
-                        System.out.println(bold+italic+"(hint: {2 operands and 1 operator with spaces} or {command and operands with spaces})"+reset+"\n");
+                        System.out.println(italic+"(hint: {2 operands and 1 operator with spaces} or {command and operands with spaces})"+reset+"\n");
                         continue;
                     }
                     double n1 = Double.parseDouble(parts[0]);
