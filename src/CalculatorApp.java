@@ -1,8 +1,16 @@
 import java.util.Scanner;
-import java.lang.Exception;
 import java.util.ArrayList;
+import java.io.FileWriter;
+import java.io.IOException;
+
+
 
 class Calculator{
+    //text styles
+    String bold = "\033[1m";
+    String italic = "\033[3m";
+    String reset = "\033[0m";
+
     private ArrayList<String> history = new ArrayList<String>();
 
 
@@ -65,13 +73,40 @@ class Calculator{
         history.add(record);
     }
 
+    public void saveHistoryToFile(String path){
+        try(FileWriter fw = new FileWriter(path,true)){
+            for(String record : history){
+                fw.write(record + System.lineSeparator());
+            }
+            System.out.println("History saved to file: " + path + "\n");
+            System.out.println(italic + "History will be cleared!" + reset);
+        }catch(IOException e){
+            System.out.println("Error saving history to file: " + e.getMessage() + "\n");
+        }
+        history.clear();
+    }
+
+    public void printHistory() {
+		if (history.isEmpty()) {
+			System.out.println("No history yet.");
+		} 
+        else {
+			System.out.println("=== Calculation History ===");
+			for (String record : history) {
+				System.out.println(record);
+			}
+		}
+        System.out.println("============================\n");
+	}
+
 }
 public class CalculatorApp {
     public static void main(String[] args){
-
+        //text styles
         String bold = "\033[1m";
         String italic = "\033[3m";
         String reset = "\033[0m";
+        
 
         Calculator c = new Calculator();
         Scanner sc = new Scanner(System.in);
@@ -119,6 +154,18 @@ public class CalculatorApp {
                 }
 
                 //history operations like save, history
+                if(parts[0].equalsIgnoreCase("save")){
+                    System.out.println("Enter the file path to save the history:");
+                    System.out.println("Ex: C:\\Users\\{deapp}\\OneDrive\\Desktop\\p1\\Java-Calculator\\history.txt");//deapp is username
+                    String path = sc.nextLine().trim();
+                    c.saveHistoryToFile(path);
+                    continue;
+                }
+
+                if(parts[0].equalsIgnoreCase("history")){
+                    c.printHistory();
+                    continue;
+                }
                 
                 
 
@@ -141,7 +188,7 @@ public class CalculatorApp {
 
         }
         
-        System.out.println(bold+italic+"Thank you!"+reset);
+        System.out.println("\n"+bold+italic+"Thank you!"+reset+"\n");
         sc.close();
     }
 }
